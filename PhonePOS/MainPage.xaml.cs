@@ -11,12 +11,16 @@ using PhonePOS.Resources;
 using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using ZXing;
+using SQLite;
+using PhonePOS.Entities;
+using System.Text;
 
 namespace PhonePOS
 {
     public partial class MainPage : PhoneApplicationPage
     {
         PhoneNumberChooserTask selNumber;
+        SQLiteConnection dbConn;
         
         // Constructor
         public MainPage()
@@ -24,6 +28,9 @@ namespace PhonePOS
             InitializeComponent();
             selNumber = new PhoneNumberChooserTask();
             selNumber.Completed += selNumber_Completed;
+
+            dbConn = new SQLiteConnection("posconn");
+            dbConn.CreateTable<Product>();
             // Código de ejemplo para traducir ApplicationBar
             //BuildLocalizedApplicationBar();
         }
@@ -64,9 +71,51 @@ namespace PhonePOS
         }
 
         private void btnScanNumber_Click(object sender, RoutedEventArgs e)
-        {           
+        {                  
+            var newprod = dbConn.Insert(new Product() 
+                                        { 
+                                        ProductDescription =  "Camisa Dockers"
+                                        });
+            var newprod1 = dbConn.Insert(new Product()
+            {
+                ProductDescription = "Pantalón Levis"
+            });
+
+            var newprod2 = dbConn.Insert(new Product()
+            {
+                ProductDescription = "Cinturón"
+            });
+
+            string q2 = "UPDATE Product SET ProductDescription = 'Mantecadas' WHERE ProductDescription = ?";
+
+
+            txtProducts.Text = GetAllProducts();
+
+            dbConn.Execute(q2, "Cinturón");
+
+            txtProducts.Text = txtProducts.Text + GetAllProducts();
+            
             selNumber.Show();
         }
+
+        private string GetAllProducts()
+        {
+            string query = "SELECT * FROM Product WHERE Id > ?";
+            int i = 0;
+            var products = dbConn.Query<Product>(query, i);
+
+            StringBuilder sb = new StringBuilder("PRODUCTOS: ");
+            sb.AppendLine(products.Count.ToString());
+            foreach (var p in products)
+            {
+                sb.Append(p.Id);
+                sb.Append("\t");
+                sb.AppendLine(p.ProductDescription);
+            }
+
+            return sb.ToString();
+        }
+
 
         private void btnScanBarcode_Click(object sender, RoutedEventArgs e)
         {

@@ -49,6 +49,7 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
                 <Button Content="Buscar número" x:Name="btnScanNumber" Click="btnScanNumber_Click"/>
+                <TextBlock x:Name="txtProducts" TextWrapping="Wrap"/>
                 <Button Content="Scan code" x:Name="btnScanBarcode" Click="btnScanBarcode_Click"/>
                 <Image x:Name="imgQRCode"/>
             </StackPanel>
