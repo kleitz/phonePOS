@@ -46,6 +46,8 @@ namespace PhonePOS
             base.OnNavigatedTo(e);
         }
 
+
+
         void CameraButtons_ShutterKeyHalfPressed(object sender, EventArgs e)
         {
             _phoneCamera.Focus();
